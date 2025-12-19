@@ -1,7 +1,9 @@
 const axios = require('axios');
 
 async function getRandomUser() {
-    const response = await axios.get('https://randomuser.me/api/');
+    const response = await axios.get('https://randomuser.me/api/', {
+        timeout: 15000
+    });
 
     const user = response.data.results[0];
 

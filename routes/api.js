@@ -8,6 +8,7 @@ router.get('/user', async (req, res) => {
         const user = await getRandomUser();
         res.json(user);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Failed to fetch user' });
     }
 });
