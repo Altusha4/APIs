@@ -5,18 +5,18 @@ async function getRandomUser() {
         timeout: 15000
     });
 
-    const user = response.data.results[0];
+    const u = response.data.results[0];
 
     return {
-        firstName: user.name.first,
-        lastName: user.name.last,
-        gender: user.gender,
-        age: user.dob.age,
-        dateOfBirth: user.dob.date,
-        city: user.location.city,
-        country: user.location.country,
-        address: `${user.location.street.name} ${user.location.street.number}`,
-        picture: user.picture.large
+        firstName: u.name.first,
+        lastName: u.name.last,
+        gender: u.gender,
+        age: u.dob.age,
+        dateOfBirth: u.dob.date,
+        city: u.location.city,
+        country: u.location.country,
+        address: `${u.location.street.name} ${u.location.street.number}`,
+        picture: u.picture.large
     };
 }
 
