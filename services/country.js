@@ -5,9 +5,7 @@ async function getCountryInfo(countryName) {
         'https://api.api-ninjas.com/v1/country',
         {
             params: { name: countryName },
-            headers: {
-                'X-Api-Key': process.env.COUNTRY_API_KEY
-            },
+            headers: { 'X-Api-Key': process.env.COUNTRY_API_KEY },
             timeout: 15000
         }
     );
@@ -18,35 +16,40 @@ async function getCountryInfo(countryName) {
 
     const c = response.data[0];
 
-    let languages = 'N/A';
+    let languages = [];
 
-    if (Array.isArray(c.languages) && c.languages.length > 0) {
-        languages = c.languages.map(l => l.name || l).join(', ');
+    if (Array.isArray(c.languages)) {
+        languages = c.languages.map(l => l.name || l);
     } else if (typeof c.languages === 'object' && c.languages !== null) {
-        languages = Object.values(c.languages).join(', ');
+        languages = Object.values(c.languages);
     } else if (typeof c.languages === 'string') {
-        languages = c.languages;
+        languages = [c.languages];
     } else if (typeof c.language === 'string') {
-        languages = c.language;
+        languages = [c.language];
     }
 
-    if (languages === 'N/A') {
+    if (languages.length === 0) {
         try {
             const rc = await axios.get(
                 `https://restcountries.com/v3.1/name/${countryName}?fullText=true`
             );
-
             const rcCountry = rc.data[0];
             if (rcCountry.languages) {
-                languages = Object.values(rcCountry.languages).join(', ');
+                languages = Object.values(rcCountry.languages);
             }
-        } catch (_) {
-        }
+        } catch (_) {}
     }
 
+    const finalLanguages = languages.length > 0
+        ? languages.join(', ')
+        : 'N/A';
+
     let currency = 'N/A';
+    let currencyCode = null;
+
     if (c.currency?.code && c.currency?.name) {
         currency = `${c.currency.code} (${c.currency.name})`;
+        currencyCode = c.currency.code;
     }
 
     let flag = c.flag || '';
@@ -57,8 +60,9 @@ async function getCountryInfo(countryName) {
     return {
         name: c.name,
         capital: c.capital || 'N/A',
-        languages,
+        languages: finalLanguages,
         currency,
+        currencyCode,
         flag
     };
 }
