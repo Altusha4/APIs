@@ -4,7 +4,11 @@ const container = document.getElementById('userContainer');
 btn.addEventListener('click', generateUser);
 
 async function generateUser() {
-    container.innerHTML = 'Loading...';
+    container.innerHTML = `
+        <div class="loading">
+            Loading...
+        </div>
+    `;
 
     const res = await fetch('/api/user');
     const data = await res.json();
@@ -15,7 +19,7 @@ async function generateUser() {
 
     if (exchange && country.currencyCode) {
         exchangeHTML = `
-            <h3>Exchange Rates</h3>
+            <h4>Exchange Rates</h4>
             <p>1 ${country.currencyCode} = ${exchange.USD.toFixed(2)} USD</p>
             <p>1 ${country.currencyCode} = ${exchange.KZT.toFixed(2)} KZT</p>
         `;
@@ -25,14 +29,13 @@ async function generateUser() {
 
     if (news && news.length > 0) {
         newsHTML = `
-            <h3>Latest News about ${user.country}</h3>
-            <div class="news-list">
+            <div class="news-row">
                 ${news.map(n => `
                     <div class="news-card">
                         ${n.image ? `<img src="${n.image}" alt="News image">` : ''}
                         <h4>${n.title}</h4>
                         <p>${n.description}</p>
-                        <a href="${n.url}" target="_blank">Read full article</a>
+                        <a href="${n.url}" target="_blank">Read more</a>
                     </div>
                 `).join('')}
             </div>
@@ -40,28 +43,39 @@ async function generateUser() {
     }
 
     container.innerHTML = `
-        <div class="card">
-            <img src="${user.picture}" alt="User photo">
-            <h2>${user.firstName} ${user.lastName}</h2>
+        <div class="profile-layout">
+            <section class="profile-header">
+                <img src="${user.picture}" class="avatar">
+                <div>
+                    <h2>${user.firstName} ${user.lastName}</h2>
+                    <p>${user.city}, ${user.country}</p>
+                </div>
+            </section>
 
-            <p><b>Gender:</b> ${user.gender}</p>
-            <p><b>Age:</b> ${user.age}</p>
-            <p><b>Date of birth:</b> ${new Date(user.dateOfBirth).toLocaleDateString()}</p>
-            <p><b>City:</b> ${user.city}</p>
-            <p><b>Country:</b> ${user.country}</p>
-            <p><b>Address:</b> ${user.address}</p>
+            <section class="profile-grid">
 
-            <hr>
-            <h3>Country Info</h3>
-            <p><b>Capital:</b> ${country.capital}</p>
-            <p><b>Languages:</b> ${country.languages}</p>
-            <p><b>Currency:</b> ${country.currency}</p>
-            <img src="${country.flag}" width="120"><br><br>
+                <div class="box">
+                    <h3>User Info</h3>
+                    <p><b>Gender:</b> ${user.gender}</p>
+                    <p><b>Age:</b> ${user.age}</p>
+                    <p><b>Date of birth:</b> ${new Date(user.dateOfBirth).toLocaleDateString()}</p>
+                    <p><b>Address:</b> ${user.address}</p>
+                </div>
 
-            ${exchangeHTML}
+                <div class="box">
+                    <h3>Country Info</h3>
+                    <p><b>Capital:</b> ${country.capital}</p>
+                    <p><b>Languages:</b> ${country.languages}</p>
+                    <p><b>Currency:</b> ${country.currency}</p>
+                    <img src="${country.flag}" class="flag">
+                    ${exchangeHTML}
+                </div>
+            </section>
 
-            <hr>
-            ${newsHTML}
+            <section class="news-section">
+                <h3>Latest News</h3>
+                ${newsHTML}
+            </section>
         </div>
     `;
 }
