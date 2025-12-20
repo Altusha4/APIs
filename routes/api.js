@@ -3,25 +3,27 @@ const router = express.Router();
 
 const { getRandomUser } = require('../services/randomUser');
 const { getCountryInfo } = require('../services/country');
+const { getExchangeRates } = require('../services/exchangeRate');
 
 router.get('/user', async (req, res) => {
     try {
         const user = await getRandomUser();
+        const country = await getCountryInfo(user.country);
 
-        let country = null;
-        try {
-            country = await getCountryInfo(user.country);
-        } catch (err) {
-            console.error('Country API error:', err.message);
+        let exchange = null;
+
+        if (country.currencyCode) {
+            exchange = await getExchangeRates(country.currencyCode);
         }
 
         res.json({
             user,
-            country
+            country,
+            exchange
         });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to load user or country data' });
+        console.error(err.message);
+        res.status(500).json({ error: 'Failed to load data' });
     }
 });
 

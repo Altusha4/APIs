@@ -10,11 +10,9 @@ async function getExchangeRates(baseCurrency) {
         throw new Error('Exchange rate API error');
     }
 
-    const rates = response.data.conversion_rates;
-
     return {
-        USD: rates.USD,
-        KZT: rates.KZT
+        USD: response.data.conversion_rates.USD,
+        KZT: response.data.conversion_rates.KZT
     };
 }
 
