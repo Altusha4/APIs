@@ -11,7 +11,6 @@ async function generateUser() {
 
     const { user, country, exchange, news } = data;
 
-    // ---------- Exchange ----------
     let exchangeHTML = '<p><b>Exchange Rates:</b> N/A</p>';
 
     if (exchange && country.currencyCode) {
@@ -22,7 +21,6 @@ async function generateUser() {
         `;
     }
 
-    // ---------- News ----------
     let newsHTML = '<p><i>No news available</i></p>';
 
     if (news && news.length > 0) {
